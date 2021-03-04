@@ -1,5 +1,8 @@
 # DDC Encryption Module Kotlin implementation
 
+[![Release](https://jitpack.io/v/User/Repo.svg)]
+(https://jitpack.io/#User/Repo)
+
 Kotlin implementation of DDC encryption and decryption algorithms.
 
 ## Requirements
@@ -15,10 +18,11 @@ repositories {
     maven { url = uri("https://jitpack.io") }
 }
 dependencies {
-    implementation("com.github.cerebellum-network:ddc-encryption-impl-kotlin:1.0.0")
+    implementation("com.github.cerebellum-network:ddc-encryption-impl-kotlin:1.0.2")
 }
 ```
 
+Encrypt and decrypt messages:
 ```kotlin
 // Create instances
 private val objectMapper = ObjectMapper()
@@ -56,4 +60,12 @@ encrypted = encrypter.encrypt(data)
 decrypted = decrypter.decrypt(encrypted, encrypter.scopeToKey, TypeHint.RAW)
 
 // abc
+```
+
+Sign data:
+```kotlin
+val privateKeyBytes = Hex.decode("38a538d3d890bfe8f76dc9bf578e215af16fd3d684666f72db0bc0a22bc1d05b")
+val signer = Ed25519Signer(privateKeyBytes)
+val message = "abc".toByteArray()
+val signature = signer.sign(message)
 ```
