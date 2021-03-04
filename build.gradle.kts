@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm") version "1.4.30"
 }
 
-group = "network.cere"
+group = "com.github.cerebellum-network"
 
 repositories {
     mavenLocal()
