@@ -1,7 +1,6 @@
 # DDC Encryption Module Kotlin implementation
 
-[![Release](https://jitpack.io/v/User/Repo.svg)]
-(https://jitpack.io/#User/Repo)
+[![Release](https://jitpack.io/v/cerebellum-network/ddc-encryption-impl-kotlin.svg)](https://jitpack.io/#cerebellum-network/ddc-encryption-impl-kotlin)
 
 Kotlin implementation of DDC encryption and decryption algorithms.
 
