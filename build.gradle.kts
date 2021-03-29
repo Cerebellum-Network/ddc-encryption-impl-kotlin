@@ -10,6 +10,7 @@ group = "com.github.cerebellum-network"
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url = uri("https://dl.bintray.com/emerald/polkaj") }
 }
 
 dependencies {
@@ -17,6 +18,7 @@ dependencies {
 
     implementation("com.rfksystems:blake2b:1.0.0")
     implementation("com.google.crypto.tink:tink:1.5.0")
+    implementation("io.emeraldpay.polkaj:polkaj-schnorrkel:0.3.0")
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.1")
 
@@ -27,7 +29,6 @@ dependencies {
 tasks {
     withType<KotlinCompile> {
         kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict")
             jvmTarget = JavaVersion.VERSION_11.toString()
             javaParameters = true
         }

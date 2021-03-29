@@ -2,7 +2,7 @@
 
 [![Release](https://jitpack.io/v/cerebellum-network/ddc-encryption-impl-kotlin.svg)](https://jitpack.io/#cerebellum-network/ddc-encryption-impl-kotlin)
 
-Kotlin implementation of DDC encryption and decryption algorithms.
+Kotlin implementation of DDC crypto functions.
 
 ## Requirements
 
@@ -17,7 +17,7 @@ repositories {
     maven { url = uri("https://jitpack.io") }
 }
 dependencies {
-    implementation("com.github.cerebellum-network:ddc-encryption-impl-kotlin:1.0.2")
+    implementation("com.github.cerebellum-network:ddc-encryption-impl-kotlin:1.+")
 }
 ```
 

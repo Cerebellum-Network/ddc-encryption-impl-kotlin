@@ -1,13 +1,22 @@
-package network.cere.ddc.crypto
+package network.cere.ddc.crypto.sign
 
 import com.google.crypto.tink.subtle.Ed25519Verify
 import com.google.crypto.tink.subtle.Hex
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 internal class Ed25519SignerTest {
     private val testSubject =
         Ed25519Signer(Hex.decode("38a538d3d890bfe8f76dc9bf578e215af16fd3d684666f72db0bc0a22bc1d05b"))
+
+    @Test
+    fun `Correct algorithm`() {
+        //when
+        val result = testSubject.algorithm
+
+        //then
+        assertEquals(SignatureAlgorithm.ED25519, result)
+    }
 
     @Test
     fun `Sign message`() {
@@ -19,7 +28,7 @@ internal class Ed25519SignerTest {
             "0cc8f3b637e28c07074b8c114c4628155f7ff666c9554561772149e5b06ed17274095d0b0bf2eabf5c5b2a670f60b1bced914437e5aaf74fb729e78830362709"
 
         //when
-        val result = testSubject.sign(message)
+        val result = testSubject.signToBytes(message)
 
         //then
         assertEquals(expectedSignature, Hex.encode(result))
