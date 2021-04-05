@@ -1,8 +1,8 @@
-package network.cere.ddc.crypto.sign
+package network.cere.ddc.crypto.v1.sign
 
 import com.google.crypto.tink.subtle.Ed25519Verify
 import com.google.crypto.tink.subtle.Hex
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class Ed25519SignerTest {
