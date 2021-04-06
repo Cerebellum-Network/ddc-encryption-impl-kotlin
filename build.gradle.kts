@@ -20,7 +20,8 @@ dependencies {
     implementation("com.google.crypto.tink:tink:1.5.0")
     implementation("io.emeraldpay.polkaj:polkaj-schnorrkel:0.3.0")
 
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.1")
+    implementation("com.github.jsurfer:jsurfer-jackson:1.6.0")
+    implementation("com.jayway.jsonpath:json-path:2.5.0")
 
     testImplementation(platform("org.junit:junit-bom:5.7.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")

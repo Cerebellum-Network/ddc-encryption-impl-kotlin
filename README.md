@@ -21,50 +21,69 @@ dependencies {
 }
 ```
 
-Encrypt and decrypt messages:
+## API
+
+### V1
+
+#### Sign the message
+
 ```kotlin
-// Create instances
-private val objectMapper = ObjectMapper()
-private val encrypter = Encrypter(
-    objectMapper,
+val privateKeyHex = "0xcafebabe"
+val msg = "to be signed"
+
+//with Ed25519 schema
+val ed25519Signer: Signer = Ed25519Signer(Hex.decode(privateKeyHex))
+val ed25519Signature = ed25519Signer.signToBytes(msg)
+
+//with Sr25519 schema
+val sr25519Signer: Signer = Sr25519Signer(Hex.decode(privateKeyHex))
+val sr25519Signature = sr25519Signer.signToBytes(msg)
+```
+
+#### Encrypt and decrypt raw message
+
+```kotlin
+val data = "raw data".toByteArray()
+val masterKeyHex = Hex.encode("super-secret-key".repeat(2).toByteArray())
+val encrypter = RawDataEncrypter(EncryptionConfig(masterKeyHex))
+val decrypter = RawDataDecrypter(DecryptionConfig(mapOf("" to masterKeyHex)))
+val encrypted = encrypter.encrypt(data)
+val decrypted = decrypted.decrypt(result) // "raw data"
+```
+
+#### Encrypt and decrypt JSON message
+
+```kotlin
+val masterKeyHex = Hex.encode("super-secret-key".repeat(2).toByteArray())
+val encrypter = JsonDataEncrypter(
     EncryptionConfig(
-        "super-secret", listOf(
-            EncryptionConfig.Scope("geo_location", listOf("geo_location", "address")),
-            EncryptionConfig.Scope("private_info", listOf("name", "dob", "address"))
-        )
+        masterKeyHex,
+        listOf("$.k1") // JSON Paths we want to encrypt, default is "$..*" which means all fields
     )
 )
-private val decrypter = Decrypter(objectMapper)
+val decrypter = JsonDataDecrypter(
+    DecryptionConfig(
+        mapOf("$.k1" to "0ae19ba1e42a63aefea507a19df00ffc962bc894b3fb720723d45e456f636977") // derived key for this path
+    )
+)
+val data = """
+            {
+                "k1": "v1",
+                "k2": "v2",
+                "k3": {
+                    "k4": true,
+                    "k5": ["v5", "v5"]
+                },
+                "k6": {
+                    "k7": {
+                        "k8": 123
+                    }
+                }
+            }
+        """.trimIndent().toByteArray()
 
-// Encrypt and decrypt JSON
-val json = """{"address":"abc","name":{"first":"John","second":"Doe"},"dob":"09-12-1988","event":"CLICK"}""".toByteArray()
-var encrypted = encrypter.encrypt(json)
-
-// {
-//    "geo_location":"9a349278dd296d7341ffc874e222f122de2bc010ac5ebc16e3987827f33d6733ef41c02dfeea41be2cf5484761d41a8e3e3c1fb8396223aebe",
-//    "private_info":"8597e2a6b3afed0c03d55ff4ecee64cf8c8556de5491ccf3d753f01f21bec038fe4b92a0639199da5a4572d6ab545c825fc719371a654e919608fe69a01188a5dddff40ee89caf2addc69d2c40245e7ddb7060365acb4348a5acf814dacf180d4e176b8e12ed08593338cb789830eaed2b64c6",
-//    "__default_scope":"edbbc40a181b945e6c4033226041a269c8e59dd2c982fb51dea5d5a9f091c5fee3586065d88a2b15552d5af4424dc0e315e4721ff8136c137c"
-// }
-
-var decrypted = decrypter.decrypt(encrypted, encrypter.scopeToKey, TypeHint.JSON)
-
-//{"address":"abc","name":{"first":"John","second":"Doe"},"dob":"09-12-1988","event":"CLICK"}
-
-// Encrypt and decrypt raw data
-val data = "abc".toByteArray()
-encrypted = encrypter.encrypt(data)
-
-// {"__default_scope":"7fd7abf981e2785c4e22b46c35e1e76b5be3b139afa80a8fcb7270db10b7c96b34b2c364107822612a0dd1"}
-
-decrypted = decrypter.decrypt(encrypted, encrypter.scopeToKey, TypeHint.RAW)
-
-// abc
+val encrypted = encrypter.encrypt(data)
+val decrypted = decrypted.decrypt(result) // "original json"
 ```
 
-Sign data:
-```kotlin
-val privateKeyBytes = Hex.decode("38a538d3d890bfe8f76dc9bf578e215af16fd3d684666f72db0bc0a22bc1d05b")
-val signer = Ed25519Signer(privateKeyBytes)
-val message = "abc".toByteArray()
-val signature = signer.sign(message)
-```
+

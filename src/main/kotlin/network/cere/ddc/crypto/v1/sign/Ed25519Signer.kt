@@ -1,4 +1,4 @@
-package network.cere.ddc.crypto.sign
+package network.cere.ddc.crypto.v1.sign
 
 import com.google.crypto.tink.subtle.Ed25519Sign
 
