@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.4.30"
     maven
+    jacoco
 }
 
 group = "com.github.cerebellum-network"
@@ -37,5 +38,13 @@ tasks {
 
     withType<Test> {
         useJUnitPlatform()
+        finalizedBy(jacocoTestReport)
+    }
+
+    withType<JacocoReport> {
+        reports {
+            xml.isEnabled = true
+            html.isEnabled = false
+        }
     }
 }
