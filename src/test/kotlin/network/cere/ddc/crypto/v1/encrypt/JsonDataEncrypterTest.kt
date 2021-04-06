@@ -1,36 +1,18 @@
 package network.cere.ddc.crypto.v1.encrypt
 
 import com.google.crypto.tink.subtle.Hex
-import com.google.crypto.tink.subtle.XChaCha20Poly1305
 import com.jayway.jsonpath.JsonPath
-import network.cere.ddc.crypto.v1.TypeHint
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-internal class EncrypterTest {
+internal class JsonDataEncrypterTest {
     private val masterKeyHex = Hex.encode("super-secret-key".repeat(2).toByteArray())
-
-    @Test
-    fun `Encrypt raw data`() {
-        //given
-        val config = EncryptionConfig(masterKeyHex, TypeHint.RAW)
-        val encrypter = Encrypter(config)
-        val data = "raw data".toByteArray()
-
-        //when
-        val result = encrypter.encrypt(data)
-
-        //then
-        assertEquals(48, result.size)
-        val decrypted = XChaCha20Poly1305(Hex.decode(masterKeyHex)).decrypt(result, null)
-        assertArrayEquals(data, decrypted)
-    }
 
     @Test
     fun `Encrypt all fields in JSON`() {
         //given
-        val config = EncryptionConfig(masterKeyHex, TypeHint.JSON)
-        val encrypter = Encrypter(config)
+        val config = EncryptionConfig(masterKeyHex)
+        val encrypter = JsonDataEncrypter(config)
         val data = """
             {
                 "k1": "v1",
@@ -60,8 +42,8 @@ internal class EncrypterTest {
     @Test
     fun `Encrypt some fields in JSON`() {
         //given
-        val config = EncryptionConfig(masterKeyHex, TypeHint.JSON, listOf("$.k3..*"))
-        val encrypter = Encrypter(config)
+        val config = EncryptionConfig(masterKeyHex, listOf("$.k3..*"))
+        val encrypter = JsonDataEncrypter(config)
         val data = """
             {
                 "k1": "v1",
