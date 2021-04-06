@@ -45,13 +45,8 @@ val sr25519Signature = sr25519Signer.signToBytes(msg)
 ```kotlin
 val data = "raw data".toByteArray()
 val masterKeyHex = Hex.encode("super-secret-key".repeat(2).toByteArray())
-val encrypter = Encrypter(EncryptionConfig(masterKeyHex, TypeHint.RAW))
-val decrypter = Decrypter(
-    DecryptionConfig(
-        TypeHint.RAW,
-        mapOf("" to masterKeyHex)
-    )
-)
+val encrypter = RawDataEncrypter(EncryptionConfig(masterKeyHex))
+val decrypter = RawDataDecrypter(DecryptionConfig(mapOf("" to masterKeyHex)))
 val encrypted = encrypter.encrypt(data)
 val decrypted = decrypted.decrypt(result) // "raw data"
 ```
@@ -59,18 +54,15 @@ val decrypted = decrypted.decrypt(result) // "raw data"
 #### Encrypt and decrypt JSON message
 
 ```kotlin
-//given
 val masterKeyHex = Hex.encode("super-secret-key".repeat(2).toByteArray())
-val encrypter = Encrypter(
+val encrypter = JsonDataEncrypter(
     EncryptionConfig(
         masterKeyHex,
-        TypeHint.JSON,
         listOf("$.k1") // JSON Paths we want to encrypt, default is "$..*" which means all fields
     )
 )
-val decrypter = Decrypter(
+val decrypter = JsonDataDecrypter(
     DecryptionConfig(
-        TypeHint.JSON,
         mapOf("$.k1" to "0ae19ba1e42a63aefea507a19df00ffc962bc894b3fb720723d45e456f636977") // derived key for this path
     )
 )
