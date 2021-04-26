@@ -1,15 +1,12 @@
 package network.cere.ddc.crypto.v1.sign
 
-import com.google.crypto.tink.subtle.Hex
+import com.goterl.lazysodium.LazySodium
+import com.goterl.lazysodium.utils.Key
 
-interface Signer {
-    val algorithm: SignatureAlgorithm
+class Signer(private val sodium: LazySodium, privateKeyHex: String) {
+    private val secretKey = Key.fromHexString(privateKeyHex)
 
-    fun signToBytes(message: String) = signToBytes(message.toByteArray())
-
-    fun signToHex(message: String): String = signToHex(message.toByteArray())
-
-    fun signToHex(message: ByteArray): String = Hex.encode(signToBytes(message))
-
-    fun signToBytes(message: ByteArray): ByteArray
+    fun sign(message: String): String {
+        return sodium.cryptoSignDetached(message, secretKey)
+    }
 }
