@@ -11,15 +11,13 @@ group = "com.github.cerebellum-network"
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url = uri("https://dl.bintray.com/emerald/polkaj") }
 }
 
 dependencies {
     implementation(kotlin("stdlib"))
 
-    implementation("com.rfksystems:blake2b:1.0.0")
-    implementation("com.google.crypto.tink:tink:1.5.0")
-    implementation("io.emeraldpay.polkaj:polkaj-schnorrkel:0.3.0")
+    api("com.goterl:lazysodium-java:5.0.1")
+    implementation("net.java.dev.jna:jna:5.8.0")
 
     implementation("com.github.jsurfer:jsurfer-jackson:1.6.0")
     implementation("com.jayway.jsonpath:json-path:2.5.0")

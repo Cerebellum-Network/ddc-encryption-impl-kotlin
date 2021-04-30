@@ -1,18 +1,22 @@
 package network.cere.ddc.crypto.v1.encrypt
 
-import com.google.crypto.tink.subtle.Hex
+import com.goterl.lazysodium.LazySodium
+import com.goterl.lazysodium.LazySodiumJava
+import com.goterl.lazysodium.SodiumJava
 import com.jayway.jsonpath.JsonPath
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 
-internal class JsonDataEncrypterTest {
-    private val masterKeyHex = Hex.encode("super-secret-key".repeat(2).toByteArray())
+internal class EncrypterTest {
+    private val sodium = LazySodiumJava(SodiumJava())
+    private val masterKeyHex = LazySodium.toHex("super-secret".toByteArray())
 
     @Test
     fun `Encrypt all fields in JSON`() {
         //given
         val config = EncryptionConfig(masterKeyHex)
-        val encrypter = JsonDataEncrypter(config)
+        val encrypter = Encrypter(sodium, config)
         val data = """
             {
                 "k1": "v1",
@@ -27,23 +31,22 @@ internal class JsonDataEncrypterTest {
                     }
                 }
             }
-        """.trimIndent().toByteArray()
+        """.trimIndent()
 
         //when
         val result = encrypter.encrypt(data)
 
         //then
-        val ctx = result.inputStream().use(JsonPath::parse)
+        val ctx = JsonPath.parse(result.first)
         val values = ctx.read<List<Any>>("$..*").filterIsInstance<String>()
         assertEquals(6, values.size)
-        values.forEach { assertTrue(it.length > 64) }
     }
 
     @Test
     fun `Encrypt some fields in JSON`() {
         //given
         val config = EncryptionConfig(masterKeyHex, listOf("$.k3..*"))
-        val encrypter = JsonDataEncrypter(config)
+        val encrypter = Encrypter(sodium, config)
         val data = """
             {
                 "k1": "v1",
@@ -58,13 +61,13 @@ internal class JsonDataEncrypterTest {
                     }
                 }
             }
-        """.trimIndent().toByteArray()
+        """.trimIndent()
 
         //when
         val result = encrypter.encrypt(data)
 
         //then
-        val ctx = result.inputStream().use(JsonPath::parse)
+        val ctx = JsonPath.parse(result.first)
         val values = ctx.read<List<Any>>("$..*").filter { it is String || it is Number }
         assertEquals(6, values.size)
         assertEquals("v1", values[0])
@@ -73,5 +76,19 @@ internal class JsonDataEncrypterTest {
         assertNotEquals("v5", values[3])
         assertNotEquals("v5", values[4])
         assertEquals(123, values[5])
+    }
+
+    @Test
+    fun `Encrypt raw data`() {
+        //given
+        val config = EncryptionConfig(masterKeyHex)
+        val encrypter = Encrypter(sodium, config)
+        val data = "raw data"
+
+        //when
+        val result = encrypter.encrypt(data)
+
+        //then
+        assertEquals(48, result.first.length)
     }
 }
