@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.30"
+    kotlin("jvm") version "1.4.32"
     maven
     jacoco
 }
@@ -16,12 +16,17 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
 
-    api("com.goterl:lazysodium-java:5.0.1")
-    implementation("net.java.dev.jna:jna:5.8.0")
+    // Crypto
+    implementation("org.purejava:tweetnacl-java:1.1.2")
+    implementation("com.rfksystems:blake2b:1.0.0")
+    implementation("commons-codec:commons-codec:1.15")
+    implementation("cash.z.ecc.android:kotlin-bip39:1.0.2")
 
+    // JSON
     implementation("com.github.jsurfer:jsurfer-jackson:1.6.0")
     implementation("com.jayway.jsonpath:json-path:2.5.0")
 
+    // Tests
     testImplementation(platform("org.junit:junit-bom:5.7.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
