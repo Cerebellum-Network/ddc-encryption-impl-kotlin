@@ -23,8 +23,8 @@ dependencies {
     implementation("cash.z.ecc.android:kotlin-bip39:1.0.2")
 
     // JSON
-    implementation("com.github.jsurfer:jsurfer-jackson:1.6.0")
-    implementation("com.jayway.jsonpath:json-path:2.5.0")
+    implementation("com.github.jsurfer:jsurfer-jackson:1.6.4")
+    implementation("com.jayway.jsonpath:json-path:2.8.0")
 
     // Tests
     testImplementation(platform("org.junit:junit-bom:5.7.1"))
